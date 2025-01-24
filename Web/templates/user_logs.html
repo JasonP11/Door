@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a> <!-- Logout link added -->
+        </div>
+    </nav>
+    <h1>Access Logs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>UID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Access Status</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="logs-body">
+            {% for log in logs %}
+            <tr>
+                <td>{{ log[0] }}</td>
+                <td>{{ log[1] }}</td>
+                <td>{{ log[2] }}</td>
+                <td>{{ log[3] }}</td>
+                <td>{{ log[4] }}</td>
+                <td>{{ log[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const socket = io();
+
+        function fetchLogs() {
+            $.getJSON('/fetch_logs', { _: new Date().getTime() }, function(data) {
+                const logsBody = $('#logs-body');
+                logsBody.empty();
+                data.forEach(function(log) {
+                    logsBody.append(
+                        `<tr>
+                            <td>${log[0]}</td>
+                            <td>${log[1]}</td>
+                            <td>${log[2]}</td>
+                            <td>${log[3]}</td>
+                            <td>${log[4]}</td>
+                            <td>${log[5]}</td>
+                        </tr>`
+                    );
+                });
+            });
+        }
+
+        // Fetch logs on page load and on 'update_logs' event
+        fetchLogs();
+        socket.on('update_logs', function() {
+            fetchLogs();
+        });
+
+        // Optional: Poll every 5 seconds in case of missed updates
+        setInterval(fetchLogs, 5000);
+    </script>
+</body>
+</html>
