@@ -6,9 +6,9 @@ def get_db_connection():
     try:
         conn = psycopg2.connect(
             host="localhost",
-            database="access_logs_db",
+            database="work",
             user="postgres",  # Replace with your username
-            password="smith"  # Replace with your password
+            password="123"  # Replace with your password
         )
         print("Database connection established")  # Debugging line
         return conn
