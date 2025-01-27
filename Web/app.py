@@ -14,7 +14,7 @@ socketio = SocketIO(app)
 app.register_blueprint(log_routes)
  
 # Database connection
-
+# Hello Smith
 
 # Home route
 @app.route('/')
