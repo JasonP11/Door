@@ -12,8 +12,8 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:123@localho
 
 # URLs for relays
 RELAY_ESP_URL_BYPASS = 'http://192.168.80.88/relay'  # Replace with bypass relay IP
-RELAY_ESP_URL_DOOR_1 = 'http://192.168.80.88/relay'  # Replace with Door 1 relay ESP8266 IP
-RELAY_ESP_URL_DOOR_2 = 'http://192.168.0.192/relay'  # Replace with Door 2 relay ESP8266 IP
+#RELAY_ESP_URL_DOOR_1 = 'http://192.168.80.88/relay'  # Replace with Door 1 relay ESP8266 IP
+#RELAY_ESP_URL_DOOR_2 = 'http://192.168.0.192/relay'  # Replace with Door 2 relay ESP8266 IP
 
 # Connect to PostgreSQL
 def get_db_connection():
@@ -71,18 +71,14 @@ def handle_nfc_data():
     cursor.close()
     conn.close()
 
-    app.logger.info(access_status)
-
-    # If access is granted, initiate relay activation in a new thread
     if access_status == "Granted":
-        relay_url = RELAY_ESP_URL_DOOR_1 if door == '1' else RELAY_ESP_URL_DOOR_2
-        relay_thread = threading.Thread(target=activate_relay, args=(relay_url,))
-        relay_thread.start()  # Start relay activation in a separate thread
-
-        # Respond immediately without waiting for relay activation to complete
+        app.logger.info(access_status)
         return jsonify({"message": "Access Granted", "uid": uid, "type": reader_type, "door": door}), 200
     else:
+        app.logger.info(access_status)
         return jsonify({"message": "Access Denied", "uid": uid, "type": reader_type, "door": door}), 403
+
+
 
 
 
