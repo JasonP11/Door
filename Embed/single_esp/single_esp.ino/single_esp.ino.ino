@@ -45,19 +45,19 @@ void setup() {
   // Initialize NFC Reader 1 (IN)
   nfc_1.begin();
   uint32_t versiondata_1 = nfc_1.getFirmwareVersion();
-  if (!versiondata_1) {
+  /*if (!versiondata_1) {
     Serial.println("Didn't find NFC Reader 1 (IN)");
     while (1);
-  }
+  }*/
   nfc_1.SAMConfig();
 
   // Initialize NFC Reader 2 (OUT)
   nfc_2.begin();
-  uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
-  if (!versiondata_2) {
-    Serial.println("Didn't find NFC Reader 2 (OUT)");
-    while (1);
-  }
+  //uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
+  //if (!versiondata_2) {
+  //  Serial.println("Didn't find NFC Reader 2 (OUT)");
+  //  while (1);
+  //}
   nfc_2.SAMConfig();
 
   WiFi.begin(ssid, password);
