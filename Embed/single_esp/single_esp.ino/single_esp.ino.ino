@@ -7,14 +7,14 @@
 
 
 // Define Chip Select (CS) pins for NFC Readers
-#define CS_PIN_1 D2  // Chip Select for NFC Reader 1 (IN)
+#define CS_PIN_1 D0  // Chip Select for NFC Reader 1 (IN)
 #define CS_PIN_2 D1  // Chip Select for NFC Reader 2 (OUT)
 
 // Define Buzzer Pin
 #define BUZZER_PIN D3  // GPIO pin connected to the buzzer (MH-FMD)
-#define PIN D4           // Led
-Adafruit_NeoPixel pixels(10, PIN, NEO_GRB + NEO_KHZ800);
-#define relayPin D0 
+#define PIN D2           // Led
+Adafruit_NeoPixel pixels(14, PIN, NEO_GRB + NEO_KHZ800);
+#define relayPin D4 
 
 PN532_SPI pn532spi_1(SPI, CS_PIN_1);  
 PN532 nfc_1(pn532spi_1);
@@ -26,7 +26,7 @@ const char* ssid = "CTPL_Guest";
 const char* password = "P@ssw0rd";
 
 // Setup Raspberry Pi server IP address and port
-const String serverUrl = "http://192.168.80.90:5000/data";  // Replace with your Raspberry Pi's IP
+const String serverUrl = "http://192.168.80.60:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 
@@ -116,7 +116,7 @@ void handleNFCReader(PN532& nfc, String readerType) {
 
         if (response.indexOf("Access Granted") >= 0) {
                 
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < 7; j++) {
             pixels.setPixelColor(j, pixels.Color(0, 255, 0)); // Green color
           }
             pixels.show();
@@ -128,8 +128,8 @@ void handleNFCReader(PN532& nfc, String readerType) {
           //delay(1000); 
           
         } else {
-            for (int i = 0; i < 10; i++) {
-            pixels.setPixelColor(i, pixels.Color( 255, 0, 0)); // Green color
+            for (int i = 0; i < 13; i++) {
+            pixels.setPixelColor(i, pixels.Color( 255, 0, 0)); // Red color
           }
           pixels.show();
           denyAccessBuzzer();
@@ -149,16 +149,17 @@ void handleNFCReader(PN532& nfc, String readerType) {
 // Function to beep once long for access granted
 void grantAccessBuzzer() {
   digitalWrite(BUZZER_PIN, LOW);  // Activate buzzer
-  delay(1000);  // Long beep for 1 second
+  delay(100);  // Long beep for 1 second
+ 
   digitalWrite(BUZZER_PIN, HIGH);  // Deactivate buzzer
 }
 
 // Function to beep twice short for access denied
 // Function to beep twice short for access denied and blink red light
 void denyAccessBuzzer() {
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 3; i++) {
     // Set all LEDs to red
-    for (int j = 0; j < 10; j++) {
+    for (int j = 0; j < 14; j++) {
       pixels.setPixelColor(j, pixels.Color(255, 0, 0)); // Red color
     }
     pixels.show();
@@ -166,12 +167,12 @@ void denyAccessBuzzer() {
     delay(200);  // Short beep for 0.2 seconds
 
     // Turn off LEDs
-    for (int j = 0; j < 10; j++) {
+    for (int j = 0; j < 14; j++) {
       pixels.setPixelColor(j, pixels.Color(0, 0, 0)); // Turn off
     }
     pixels.show();
     digitalWrite(BUZZER_PIN, HIGH);  // Deactivate buzzer
-    delay(200);  // Short pause between beeps and blinks
+    delay(50);  // Short pause between beeps and blinks
   }
 }
 
@@ -204,14 +205,14 @@ String getUIDString(uint8_t* uid, uint8_t uidSize) {
 
 void LED() {
   // Set all LEDs to green
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 7; i++) {
     pixels.setPixelColor(i, pixels.Color(0, 0, 255)); // Green color
   }
       // Update the LED strip to show the green color
 
 
   // Set all LEDs to green
-  for (int j = 5; j < 10; j++) {
+  for (int j = 7; j < 14; j++) {
     pixels.setPixelColor(j, pixels.Color(255, 255, 255)); // Green color
   }
   pixels.show();         // Update the LED strip to show the green color

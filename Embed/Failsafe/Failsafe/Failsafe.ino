@@ -9,8 +9,6 @@
 //MISO 6
 //Mosi 7
 
-
-
 // Define Chip Select (CS) pins for NFC Readers
 #define CS_PIN_1 D2  // Chip Select for NFC Reader 1 (IN)
 #define CS_PIN_2 D1  // Chip Select for NFC Reader 2 (OUT)
