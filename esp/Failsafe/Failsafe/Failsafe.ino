@@ -9,17 +9,16 @@
 //MISO 6
 //Mosi 7
 
-// Define Ch3 Select (CS) pins for NFC Readers
-#define CS_PIN_1 D0  // Chip Select for NFC Reader 1 (IN)
+// Define Chip Select (CS) pins for NFC Readers
+#define CS_PIN_1 D2  // Chip Select for NFC Reader 1 (IN)
 #define CS_PIN_2 D1  // Chip Select for NFC Reader 2 (OUT)
 
-// Define Buzzer Pin
-#define BUZZER_PIN D3  // GPIO pin connected to the buzzer (MH-FMD)
-#define PIN D2           // Led
-Adafruit_NeoPixel pixels(14, PIN, NEO_GRB + NEO_KHZ800);
-#define relayPin D4 
+// Define Buzzer, LED, and Relay Pins
+#define BUZZER_PIN D3  // GPIO pin connected to the buzzer
+#define LED_PIN D4      // GPIO pin for NeoPixel LEDs
+#define RELAY_PIN D0    // GPIO pin connected to the relay
 
-Adafruit_NeoPixel pixels(14, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(10, LED_PIN, NEO_GRB + NEO_KHZ800);
 PN532_SPI pn532spi_1(SPI, CS_PIN_1);
 PN532 nfc_1(pn532spi_1);
 PN532_SPI pn532spi_2(SPI, CS_PIN_2);
@@ -30,7 +29,7 @@ const char* ssid = "CTPL_Guest";
 const char* password = "P@ssw0rd";
 
 // Replace with your Raspberry Pi server's IP
-const String serverUrl = "http://192.168.80.60:5000/data";
+const String serverUrl = "http://192.168.80.90:5000/data";
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 

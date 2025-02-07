@@ -26,7 +26,7 @@ const char* ssid = "CTPL_Guest";
 const char* password = "P@ssw0rd";
 
 // Setup Raspberry Pi server IP address and port
-const String serverUrl = "http://192.168.80.60:5000/data";  // Replace with your Raspberry Pi's IP
+const String serverUrl = "http://192.168.80.48:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 
@@ -45,19 +45,19 @@ void setup() {
   // Initialize NFC Reader 1 (IN)
   nfc_1.begin();
   uint32_t versiondata_1 = nfc_1.getFirmwareVersion();
-  /*if (!versiondata_1) {
+  if (!versiondata_1) {
     Serial.println("Didn't find NFC Reader 1 (IN)");
     while (1);
-  }*/
+  }
   nfc_1.SAMConfig();
 
   // Initialize NFC Reader 2 (OUT)
   nfc_2.begin();
-  //uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
-  //if (!versiondata_2) {
-  //  Serial.println("Didn't find NFC Reader 2 (OUT)");
-  //  while (1);
-  //}
+  uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
+  if (!versiondata_2) {
+    Serial.println("Didn't find NFC Reader 2 (OUT)");
+    while (1);
+  }
   nfc_2.SAMConfig();
 
   WiFi.begin(ssid, password);
@@ -152,6 +152,14 @@ void grantAccessBuzzer() {
   delay(100);  // Long beep for 1 second
  
   digitalWrite(BUZZER_PIN, HIGH);  // Deactivate buzzer
+  for (int j = 0; j < 14; j++) {
+    pixels.setPixelColor(j, pixels.Color(0, 255, 0)); // Green color
+  }
+  pixels.show();
+
+  delay(1000);  // Keep green for 1 second
+
+  LED();  // Reset LEDs back to normal state
 }
 
 // Function to beep twice short for access denied
@@ -205,15 +213,15 @@ String getUIDString(uint8_t* uid, uint8_t uidSize) {
 
 void LED() {
   // Set all LEDs to green
-  for (int i = 0; i < 7; i++) {
-    pixels.setPixelColor(i, pixels.Color(0, 0, 255)); // Green color
+  for (int i = 9; i < 14; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 0, 255)); // blue color
   }
       // Update the LED strip to show the green color
 
 
   // Set all LEDs to green
-  for (int j = 7; j < 14; j++) {
-    pixels.setPixelColor(j, pixels.Color(255, 255, 255)); // Green color
+  for (int j = 0; j < 9; j++) {
+    pixels.setPixelColor(j, pixels.Color(255, 255, 255)); // white color
   }
   pixels.show();         // Update the LED strip to show the green color
 }
