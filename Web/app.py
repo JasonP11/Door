@@ -12,14 +12,14 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 socketio = SocketIO(app)
 app.register_blueprint(log_routes)
- 
+  
 # Database connection
-# Hello Smith
+
 
 # Home route
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('login.html')
 
 # Modified Login route to fetch logs after successful login
 @app.route('/login', methods=['GET', 'POST'])
@@ -116,7 +116,7 @@ def fetch_logs():
 def logout():
     # Clear the user session
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5001, debug=True)

@@ -1,131 +1,141 @@
 
 
 
-/* Navbar styles */
-.navbar {
-    background-color: #34495e; /* Dark background for the navbar */
-    padding: 10px 20px; /* Padding for the navbar */
-}
 
-.navbar-container {
-    display: flex;
-    justify-content: flex-start; /* Align links to the left */
-}
-
-.navbar-link {
-    color: white; /* White text color */
-    margin-right: 20px; /* Space between links */
-    text-decoration: none; /* Remove underline */
-    font-size: 1.2em; /* Font size for links */
-    transition: color 0.3s; /* Smooth transition for hover effect */
-}
-
-.navbar-link:hover {
-    color: #ecf0f1; /* Lighter color on hover */
-}
-
-/* Content styles */
-.content {
-    text-align: center; /* Center the content */
-    margin-top: 50px; /* Space above the content */
-}
-/* Content styles */
-.content {
-    text-align: center; /* Center the content */
-    margin-top: 50px; /* Space above the content */
-}
 
 /* Add these classes to your styles.css file */
 
-.access-logs-system {
+
+/* General Styles */
+/* General Styles */
+/* General body styles */
+body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background: linear-gradient(to right, #2c3e50, #4a69bd);
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
-
-.access-logs-heading {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #2c3e50;
-}
-
-.access-logs-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    font-size: 1.2em;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.access-logs-button-primary {
-    background-color: #3498db;
-    color: white;
-}
-
-.access-logs-button-secondary {
-    background-color: #2ecc71;
-    color: white;
-}
-
-.access-logs-button:hover {
-    transform: translateY(-2px);
-}
-
-.access-logs-button-primary:hover {
-    background-color: #2980b9;
-}
-
-.access-logs-button-secondary:hover {
-    background-color: #27ae60;
-}
-
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-.table-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-table {
+/* Container for login */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+/* Login box */
+.login-box {
+    display: flex;
+    width: 700px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-th {
-    background-color: #4CAF50;
+/* Left Section - Chrisel Technolab */
+.login-left {
+    width: 40%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px 0 0 10px;
+    padding: 20px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Right Section - Login Form */
+.login-right {
+    flex: 2;
+    padding: 25px;
     color: white;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
 }
+
+
+.logo-container img {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+    border-radius: 50%
+}
+
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 2px solid white;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to right, #1e90ff, #00bfff);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(to right, #00bfff, #1e90ff);
+}
+
+p {
+    text-align: left;
+}
+
+a {
+    color: #00bfff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+h2{
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+}
+
+
+
+
+
+
 
 @media (max-width: 600px) {
     th, td {

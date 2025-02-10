@@ -1,6 +1,3 @@
-#USELESS?
-
-
 import psycopg2
 from flask import Flask,Blueprint, render_template, jsonify, redirect, request, url_for, session, flash
 from db import get_db_connection
