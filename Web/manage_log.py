@@ -11,7 +11,7 @@ log_routes = Blueprint('log_routes', __name__)
 @log_routes.route('/logs', methods=['POST'])
 def add_log():
     data = request.json
-    conn = get_db_connection()
+    conn = get_db_connection() 
     cursor = conn.cursor()
     try:
         cursor.execute('INSERT INTO logs (uid, name, role) VALUES (%s, %s, %s)',
