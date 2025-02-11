@@ -22,13 +22,13 @@ PN532_SPI pn532spi_2(SPI, CS_PIN_2);
 PN532 nfc_2(pn532spi_2);
 
 // Replace with your network credentials
-//const char* ssid = "CTPL_Guest";
-//const char* password = "P@ssw0rd";
-const char* ssid = "Neelam_21";
-const char* password = "Jason1234";
+const char* ssid = "CTPL_Guest";
+const char* password = "P@ssw0rd";
+//const char* ssid = "Neelam_21";
+//const char* password = "Jason1234";
 
 // Setup Raspberry Pi server IP address and port
-const String serverUrl = "http://192.168.0.42:5000/data";  // Replace with your Raspberry Pi's IP
+const String serverUrl = "http://192.168.80.60:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 
@@ -148,11 +148,17 @@ void handleNFCReader(PN532& nfc, String readerType) {
           }
             pixels.show();
             grantAccessBuzzer();
-            digitalWrite(relayPin, LOW);   // Deactivate relay
-            delay(5000);
-            digitalWrite(relayPin, HIGH); 
-          
-          //delay(1000); 
+            //digitalWrite(relayPin, LOW);   // Deactivate relay
+            //delay(5000);
+            //digitalWrite(relayPin, HIGH); 
+            unsigned long relayStartTime = millis();
+            digitalWrite(relayPin, LOW);   // Activate relay
+            while (millis() - relayStartTime < 5000) { 
+                loop();  // Call loop to keep NFC scanning
+            }
+
+            digitalWrite(relayPin, HIGH);  // Deactivate relay
+                      //delay(1000); 
           
         } else {
             for (int i = 0; i < 13; i++) {
