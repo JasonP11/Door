@@ -1,23 +1,44 @@
+/* Navbar styles */
 .navbar {
-    background-color: #34495e; /* Dark background for the navbar */
+    display: flex;
+    background: linear-gradient(to right, #557d9e,#bbe2ec); /* Dark background for the navbar */
     padding: 10px 20px; /* Padding for the navbar */
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-container h2 {
+    margin-left: 10px;
+}
+.navbar-container {
+    display:flex;
+    align-items: center;
+    
+    
+     /* Align links to the left */
 }
 
-.navbar-container {
-    display: flex;
-    justify-content: flex-start; /* Align links to the left */
-}
 
 .navbar-link {
+    border-radius: 5px;    
+    background: linear-gradient(to right, #1e90ff, #00bfff);
+    padding: 10px;
     color: white; /* White text color */
-    margin-right: 20px; /* Space between links */
     text-decoration: none; /* Remove underline */
     font-size: 1.2em; /* Font size for links */
     transition: color 0.3s; /* Smooth transition for hover effect */
 }
 
 .navbar-link:hover {
+    background: linear-gradient(to right, #00bfff, #1e90ff);
     color: #557d9e; /* Lighter color on hover */
+}
+
+.logo{
+    float: left;
+    width: 115px;
+    border-radius: 50%; 
+    
+
 }
 
 
@@ -41,11 +62,13 @@ button:hover {
 
 
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #557d9e, #eef2f3);
-
+   
     margin: 0;
     padding: 20px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right,#557d9e,#bbe2ec);
+    min-height: 100vh;
+    
 }
 
 h1 {
@@ -66,7 +89,7 @@ h3 {
 }
 
 input[type="text"] {
-    background: linear-gradient(to right, #5d819e ,#f8f9f9);
+    background: linear-gradient(to right, #557d9e,#bbe2ec);
     
     width: calc(100% - 22px);
     padding: 10px;

@@ -11,8 +11,17 @@
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a> <!-- Logout link added -->
+            <div>
+                <img src="/static/chrisel_logo.jpg" alt="Logo" class="logo">
+               
+            </div>
+            <div>
+                <h2>Chrisel Technolab</h2>
+            </div>
+            
         </div>
+        <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a> <!-- Logout link added -->
+        
     </nav>
 
 <h1>Logs Management</h1>
@@ -45,7 +54,7 @@
 </table>
 
 <script>
-    const apiUrl = 'http://192.168.0.118:5001//logs'; // Adjust if needed
+    const apiUrl = 'http://192.168.0.169:5001//logs'; // Adjust if needed
 
     // Fetch and display logs
     async function fetchLogs() {
