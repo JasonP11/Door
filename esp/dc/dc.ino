@@ -37,6 +37,8 @@ void setup() {
   pinMode(relayPin, OUTPUT);
   digitalWrite(relayPin, HIGH);  // Initialize relay as off
 
+  pinMode(LED_BUILTIN, OUTPUT);  // Set built-in LED as an output
+
   Serial.begin(115200);
   SPI.begin();
   pixels.begin();        // Initialize the NeoPixel strip
@@ -72,29 +74,50 @@ void setup() {
 }
 
 void loop() {
-  
-  LED();
+    LED();
 
-  digitalWrite(CS_PIN_1, LOW);  // Select Reader 1
-  digitalWrite(CS_PIN_2, HIGH); // Deselect Reader 2
-  handleNFCReader(nfc_1, "IN");  // IN reader (Door 1)
-  delay(200);
-  digitalWrite(CS_PIN_1, HIGH);  // Deselect Reader 2
-  digitalWrite(CS_PIN_2, LOW);  // Select Reader 1
-  handleNFCReader(nfc_2, "OUT");  // OUT reader (Door 2)
-  delay(200);
-
+    // Fully disable both readers before enabling the required one
+    digitalWrite(CS_PIN_1, HIGH);
+    digitalWrite(CS_PIN_2, HIGH);
+    
+    digitalWrite(CS_PIN_1, LOW);  // Select Reader 1
+    delay(5); // Small delay to allow SPI stabilization
+    handleNFCReader(nfc_1, "IN");  // IN reader (Door 1)
+    digitalWrite(CS_PIN_1, HIGH);  // Fully disable Reader 1
+    checkAndReinitializeNFC(nfc_1, "IN");
+    delay(100); // Small buffer time between switching readers
+    
+    digitalWrite(CS_PIN_2, LOW);  // Select Reader 2
+    delay(5);  // Allow time for SPI stabilization
+    handleNFCReader(nfc_2, "OUT");  // OUT reader (Door 2)
+    digitalWrite(CS_PIN_2, HIGH);  // Fully disable Reader 2
+    checkAndReinitializeNFC(nfc_2, "OUT");
+    delay(100);
 }
+
+
+void checkAndReinitializeNFC(PN532& nfc, String readerName) {
+  uint32_t versiondata = nfc.getFirmwareVersion(); // Check if NFC is still responding
+  if (!versiondata) {
+    digitalWrite(LED_BUILTIN, LOW);  // Turn LED ON (active LOW)
+    delay(500);                      // Wait for 500ms
+    digitalWrite(LED_BUILTIN, HIGH); // Turn LED OFF
+    delay(500);                      // Wait for 500ms
+  }
+}
+
+
 
 // Function to handle NFC reader input and send data to server
 void handleNFCReader(PN532& nfc, String readerType) {
+   nfc.SAMConfig(); 
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };
   uint8_t uidLength;
   
   // Set the door variable based on which reader is being used
   String door = "1";  // Door 1 for IN, Door 2 for OUT
 
-  if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)) {
+  if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 200)) {
     String uidString = getUIDString(uid, uidLength);
     Serial.print("Card UID from NFC Reader ");
     Serial.print(readerType);
@@ -110,6 +133,7 @@ void handleNFCReader(PN532& nfc, String readerType) {
 
       // Send both type and door in postData
       String postData = "uid=" + uidString + "&type=" + readerType + "&door=" + door;
+      //http.setTimeout(500); // Set timeout to 500ms
       int httpResponseCode = http.POST(postData);
 
       if (httpResponseCode > 0) {
