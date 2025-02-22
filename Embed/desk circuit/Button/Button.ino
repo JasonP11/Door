@@ -1,11 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-const char* ssid = "CTPL_Guest";
-const char* password = "P@ssw0rd";
-const char* serverUrl = "http://192.168.80.84:5000/bypass";  // Replace with server IP and port
+const char* ssid = "CTPL_Office";
+const char* password = "P@ssw0rd@1";
+const char* serverUrl = "http://192.168.80.92:5000/bypass";  // Replace with server IP and port
 
-const int buttonPin = D4;  // Button connected to D1 and GND
+const int buttonPin = D4;  // Button connected to D4 and GND
 bool lastButtonState = HIGH;  // Default to HIGH due to pull-up
 
 void setup() {

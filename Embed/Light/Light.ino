@@ -26,7 +26,7 @@ void loop() {
   pixels.show();         // Update the LED strip to show the colors
     delay(1000);  
 }
-*/
+
 
 #include <Adafruit_NeoPixel.h>
 
@@ -55,3 +55,48 @@ void loop() {
   pixels.show();   // Update the LED strip
   delay(1000);     // Delay to prevent excessive refresh rate
 }
+*/
+
+#include <Adafruit_NeoPixel.h>
+#include <ESP8266WiFi.h>
+
+#define LED_PIN D2    // Pin connected to the data pin of the NeoPixel
+#define LED_COUNT 14   // Number of LEDs in the strip
+
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+// WiFi credentials
+const char* ssid = "Neelam_21";
+const char* password = "Jason1234";
+
+void setup() {
+  Serial.begin(115200);
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    runningLight(128, 0, 128, 50);  // Show running light until WiFi connects
+    Serial.println("Connecting to WiFi...");
+    //delay(1000);
+  }
+  strip.clear();
+  strip.show(); // Turn off LEDs once connected
+}
+
+void loop() {
+  // Normal operation after WiFi connects
+}
+
+void runningLight(uint8_t red, uint8_t green, uint8_t blue, int wait) {
+  for (int i = 0; i < LED_COUNT; i++) {
+    strip.clear();
+    strip.setPixelColor(i, strip.Color(red, green, blue));
+    strip.show();
+    delay(100);
+    if (WiFi.status() == WL_CONNECTED){
+      break;
+    }
+  }
+}
+

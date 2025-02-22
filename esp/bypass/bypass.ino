@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <Adafruit_NeoPixel.h>
+#include <ESP8266WebServer.h>
 
 
 // Define Chip Select (CS) pins for NFC Readers
@@ -22,8 +23,8 @@ PN532_SPI pn532spi_2(SPI, CS_PIN_2);
 PN532 nfc_2(pn532spi_2);
 
 // Replace with your network credentials
-const char* ssid = "CTPL_Guest";
-const char* password = "P@ssw0rd";
+const char* ssid = "CTPL_Office";
+const char* password = "P@ssw0rd@1";
 //const char* ssid = "Neelam_21";
 //const char* password = "Jason1234";
 
@@ -31,6 +32,22 @@ const char* password = "P@ssw0rd";
 const String serverUrl = "http://192.168.80.92:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
+ESP8266WebServer server(80);
+
+void handleRelay() {
+  digitalWrite(relayPin, HIGH);
+  if (server.hasArg("plain")) {
+    String command = server.arg("plain");
+    if (command == "{\"command\":\"open\"}") {
+      digitalWrite(relayPin, LOW);   // Activate relay
+      delay(5000);
+      digitalWrite(relayPin, HIGH);  // Deactivate relay
+      server.send(200, "application/json", "{\"status\":\"Relay Opened\"}");
+    } else {
+      server.send(400, "application/json", "{\"status\":\"Invalid Command\"}");
+    }
+  }
+}
 
 void setup() {
   
@@ -71,10 +88,14 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+
+  server.on("/relay", HTTP_POST, handleRelay);
+  server.begin();
   Serial.println(WiFi.localIP()); 
 }
 
 void loop() {
+    server.handleClient();
     LED();
 
     // Fully disable both readers before enabling the required one

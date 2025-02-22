@@ -11,7 +11,7 @@ app = Flask(__name__)
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:123@localhost:5432/work')
 
 # URLs for relays
-RELAY_ESP_URL_BYPASS = 'http://192.168.80.88/relay'  # Replace with bypass relay IP
+RELAY_ESP_URL_BYPASS = 'http://192.168.80.48/relay'  # Replace with bypass relay IP
 #RELAY_ESP_URL_DOOR_1 = 'http://192.168.80.88/relay'  # Replace with Door 1 relay ESP8266 IP
 #RELAY_ESP_URL_DOOR_2 = 'http://192.168.0.192/relay'  # Replace with Door 2 relay ESP8266 IP
 
@@ -102,7 +102,13 @@ def bypass_relay():
     try:
         # Send data as plain JSON
         headers = {'Content-Type': 'application/json'}
-        response = requests.post(RELAY_ESP_URL_BYPASS, data='{"command":"open"}', headers=headers)
+        response = requests.post(
+        RELAY_ESP_URL_BYPASS,
+        data={'plain': '{"command":"open"}'},
+        headers={'Content-Type': 'application/x-www-form-urlencoded'},
+        timeout=3
+        )
+
         if response.status_code == 200:
             return jsonify({"message": "Relay Activated"}), 200
         else:
