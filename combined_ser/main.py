@@ -62,10 +62,11 @@ def handle_nfc_data():
 
     # Log the access attempt in the access_logs table
     log_query = """
-        INSERT INTO access_logs (code, name, role, status, timestamp)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO access_logs (door_no, code, name, role, status, timestamp)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
     cursor.execute(log_query, (uid, user_name, user_role, access_status, datetime.now()))
+
 
     conn.commit()
     cursor.close()
@@ -79,7 +80,28 @@ def handle_nfc_data():
         return jsonify({"message": "Access Denied", "uid": uid, "type": reader_type, "door": door}), 403
 
 
+@app.route('/setup', methods=['POST'])
+def IP():
+    #relay_ip
+    relay_ip = request.form.get("relay_ip")
+    request_type = request.form.get("type")  # Get type (setup or normal)
+    door_no = request.form.get("door")
+    if request_type == "setup":
+        print(f"🔧 Setup Request Received! Relay IP: {relay_ip}, Door No: {door_no}")
+    else:
+        print(f"📡 Normal Data Received. Relay IP: {relay_ip}, Door No: {door_no}")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    log_query = """
+        INSERT INTO door (door_no, door_ip)
+        VALUES (%s, %s)
+    """
+    cursor.execute(log_query,(door_no,relay_ip))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
+    return "Data received", 200
 
 
 @app.route('/')
