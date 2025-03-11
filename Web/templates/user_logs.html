@@ -11,79 +11,80 @@
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <div>
-                <img src="/static/chrisel_logo.jpg" alt="Logo" class="logo">
-               
-            </div>
-            <div>
-                <h2>Chrisel Technolab</h2>
-            </div>
-           
+            <img src="/static/chrisel_logo.jpg" alt="Logo" class="logo">
+            <h2>Chrisel Technolab</h2>
         </div>
-        <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a> <!-- Logout link added -->
-           
-        
+        <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>
     </nav>
-    
-    
+
     <div class="Access">
         <h1>Access Logs</h1>
     </div>
+
+    <div class="log-filter">
+        <label for="log-date">Date:</label>
+        <input type="date" id="log-date"/>
+    </div>
+
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>UID</th>
+                <th>Code</th>
                 <th>Name</th>
-                <th>Type</th>
-                <th>Access Status</th>
+                <th>Role</th>
+                <th>Status</th>
                 <th>Timestamp</th>
             </tr>
         </thead>
-        <tbody id="logs-body">
-            {% for log in logs %}
-            <tr>
-                <td>{{ log[0] }}</td>
-                <td>{{ log[1] }}</td>
-                <td>{{ log[2] }}</td>
-                <td>{{ log[3] }}</td>
-                <td>{{ log[4] }}</td>
-                <td>{{ log[5] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="logs-body"></tbody>
     </table>
 
     <script>
         const socket = io();
 
-        function fetchLogs() {
-            $.getJSON('/fetch_logs', { _: new Date().getTime() }, function(data) {
+        function fetchLogs(date) {
+            $.getJSON('/fetch_logss', { date: date }, function(data) {
                 const logsBody = $('#logs-body');
                 logsBody.empty();
-                data.forEach(function(log) {
-                    logsBody.append(
-                        `<tr>
-                            <td>${log[0]}</td>
-                            <td>${log[1]}</td>
-                            <td>${log[2]}</td>
-                            <td>${log[3]}</td>
-                            <td>${log[4]}</td>
-                            <td>${log[5]}</td>
-                        </tr>`
-                    );
-                });
+                if (data.length === 0) {
+                    logsBody.append('<tr><td colspan="6">No logs available for this date.</td></tr>');
+                } else {
+                    data.forEach(function(log) {
+                        logsBody.append(
+                            `<tr>
+                                <td>${log.id}</td>
+                                <td>${log.code}</td>
+                                <td>${log.name}</td>
+                                <td>${log.role}</td>
+                                <td>${log.status}</td>
+                                <td>${log.timestamp}</td>
+                            </tr>`
+                        );
+                    });
+                }
             });
         }
 
-        // Fetch logs on page load and on 'update_logs' event
-        fetchLogs();
-        socket.on('update_logs', function() {
-            fetchLogs();
+        $(document).ready(function() {
+            if (localStorage.getItem("selectedDate")) {
+                $("#log-date").val(localStorage.getItem("selectedDate"));
+                fetchLogs(localStorage.getItem("selectedDate"));
+            }
+
+            $('#log-date').on('change', function() {
+                const selectedDate = $(this).val();
+                localStorage.setItem("selectedDate", selectedDate);
+                fetchLogs(selectedDate);
+            });
         });
 
-        // Optional: Poll every 5 seconds in case of missed updates
-        setInterval(fetchLogs, 5000);
+        
+        fetchLogs();
+        socket.on('update_logs', function() {
+            const selectedDate = $("#log-date").val() || localStorage.getItem("selectedDate");
+            fetchLogs(selectedDate);
+        });
     </script>
 </body>
 </html>
