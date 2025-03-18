@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/styles.css">
     <title>Sign Up</title>
-    <script>
-        function showError(message) {
-            if (message) {
-                alert(message);
-            }
-        }
-    </script>
+    
 </head>
-<body onload="showError('{{ error }}')">
+<body>
+    {% if alert %}
+    <script>
+        alert("{{ alert }}");
+    </script>
+    {% endif %}
     <div class="login-container">
         <div class="login-box">
             <div class="login-left">

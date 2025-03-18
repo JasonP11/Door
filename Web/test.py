@@ -86,7 +86,7 @@ def signup():
             conn.commit()
         except psycopg2.IntegrityError:
             conn.rollback()
-            return jsonify({"error": "Username already exists"}), 400
+            return render_template('signup.html', alert="Username Already Exists!")
         finally:
             cur.close()
             conn.close()
