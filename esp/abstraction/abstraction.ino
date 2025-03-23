@@ -24,13 +24,14 @@ PN532_SPI pn532spi_2(SPI, CS_PIN_2);
 PN532 nfc_2(pn532spi_2);
 
 // Replace with your network credentials
-const char* ssid = "CTPL_Office";
-const char* password = "P@ssw0rd@1";
-//const char* ssid = "Neelam_21";
-//const char* password = "Jason1234";
+// const char* ssid = "CTPL_Office";
+// const char* password = "P@ssw0rd@1";
+const char* ssid = "Neelam_21";
+const char* password = "Jason1234";
 
 // Setup Raspberry Pi server IP address and port
-const String serverUrl = "http://192.168.80.96:5000/data";  // Replace with your Raspberry Pi's IP
+//const String serverUrl = "http://192.168.80.90:5000/data";  // Replace with your Raspberry Pi's IP
+const String serverUrl = "http://192.168.0.42:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 ESP8266WebServer server(80);
@@ -52,23 +53,24 @@ void setup() {
   
   // Initialize NFC Reader 1 (IN)
   nfc_1.begin();
-/*  uint32_t versiondata_1 = nfc_1.getFirmwareVersion();
+/*  
+  uint32_t versiondata_1 = nfc_1.getFirmwareVersion();
   if (!versiondata_1) {
     Serial.println("Didn't find NFC Reader 1 (IN)");
     while (1);
   }
-  */
+*/  
   nfc_1.SAMConfig();
 
   // Initialize NFC Reader 2 (OUT)
   nfc_2.begin();
-  uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
  /* 
+  uint32_t versiondata_2 = nfc_2.getFirmwareVersion(); 
   if (!versiondata_2) {
     Serial.println("Didn't find NFC Reader 2 (OUT)");
     while (1);
   }
-  */
+ */ 
   nfc_2.SAMConfig();
   
   WiFi.begin(ssid, password);
@@ -77,10 +79,11 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
-  sendIP();
   server.on("/relay", HTTP_POST, handleRelay);
   server.begin();
   Serial.println(WiFi.localIP()); 
+  Serial.println(WiFi.macAddress());
+  sendIP();
 }
 
 void loop() {
@@ -109,14 +112,16 @@ void loop() {
 
 void sendIP(){
   String IP = WiFi.localIP().toString();
-  const String serverUrl1 = "http://192.168.80.96:5000/setup"; 
+  String MacAdd = WiFi.macAddress();
+  const String serverUrl1 = "http://192.168.0.42:5000/setup"; 
   if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
       http.begin(wifiClient, serverUrl1);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
       //http.POST(IP);
-      String payload = "type=setup&relay_ip=" + IP + "&door=2";   // Include type parameter
-        int httpResponseCode = http.POST(payload);
+      String payload = "type=setup&relay_ip=" + IP + "&door=2" + "&MacAdd=" + MacAdd ;   // Include type parameter
+      Serial.println(payload);  
+      int httpResponseCode = http.POST(payload);
   }
 }
 
@@ -147,9 +152,10 @@ void handleRelay() {
       unsigned long relayStartTime = millis();
       while (millis() - relayStartTime < 5000) { 
                 loop();  // Call loop to keep NFC scanning
+                server.send(200, "application/json", "{\"status\":\"Relay Opened\"}");
             }
       digitalWrite(relayPin, LOW);  // Deactivate relay
-      server.send(200, "application/json", "{\"status\":\"Relay Opened\"}");
+      //server.send(200, "application/json", "{\"status\":\"Relay Opened\"}");
     } else {
       server.send(400, "application/json", "{\"status\":\"Invalid Command\"}");
     }
@@ -159,10 +165,10 @@ void handleRelay() {
 void checkAndReinitializeNFC(PN532& nfc, String readerName) {
   uint32_t versiondata = nfc.getFirmwareVersion(); // Check if NFC is still responding
   if (!versiondata) {
-    digitalWrite(LED_BUILTIN, LOW);  // Turn LED ON (active LOW)
-    delay(1000);                      // Wait for 500ms
-    digitalWrite(LED_BUILTIN, HIGH); // Turn LED OFF
-    delay(1000);                      // Wait for 500ms
+    //digitalWrite(LED_BUILTIN, LOW);  // Turn LED ON (active LOW)
+    //delay(1000);                      // Wait for 500ms
+    //digitalWrite(LED_BUILTIN, HIGH); // Turn LED OFF
+    //delay(1000);                      // Wait for 500ms
   }
 }
 
@@ -175,7 +181,7 @@ void handleNFCReader(PN532& nfc, String readerType) {
   uint8_t uidLength;
   
   // Set the door variable based on which reader is being used
-  String door = "2";  // Door 1 for IN, Door 2 for OUT
+  String door = "0";  // Door 1 for IN, Door 2 for OUT
 
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 200)) {
     String uidString = getUIDString(uid, uidLength);
