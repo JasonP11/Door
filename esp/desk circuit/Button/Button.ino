@@ -50,7 +50,7 @@ void loop() {
 WiFiManager wifiManager;
 //const char* ssid = "CTPL_Office";
 //const char* password = "P@ssw0rd@1";
-const char* serverUrl = "http://192.168.0.42:5000/bypass";  // Replace with server IP and port
+const char* serverUrl = "http://192.168.80.91:5000/bypass";  // Replace with server IP and port
 
 const int buttonPin = D4;  // Button connected to D4 and GND
 bool lastButtonState = HIGH;  // Default to HIGH due to pull-up
@@ -78,8 +78,11 @@ void loop() {
       WiFiClient client;
       HTTPClient http;
       http.begin(client, serverUrl);
-      String postData = "door_id=2&password=securepass";
+      String postData = "{\"door_id\": \"0\", \"password\": \"securepass\"}";
+
       Serial.println(postData);
+      http.addHeader("Content-Type", "application/json");
+
       int httpResponseCode = http.POST(postData);
 
       if (httpResponseCode > 0) {

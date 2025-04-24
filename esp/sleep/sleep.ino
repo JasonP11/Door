@@ -31,7 +31,7 @@ void FindIP(){
             buffer[packetSize] = '\0';
             Serial.print("Raspberry Pi IP: ");
             Serial.println(buffer);
-            return buffer;
+            //return buffer;
         }
         delay(500);
     }
@@ -82,4 +82,5 @@ void setup() {
 
 void loop() {
   FindIP();
+  delay(2000);
 }

@@ -146,6 +146,19 @@ def IP():
     return "Data received", 200
 
 
+@app.route('/get_uids', methods=['GET'])
+def get_uids():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT key_id, level FROM emp")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    data = [{"key_id": row[0], "level": row[1]} for row in rows]
+    return jsonify(data)
+
+
 @app.route('/')
 def fetch_logs():
     conn = get_db_connection()
