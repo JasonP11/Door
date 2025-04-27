@@ -2,6 +2,7 @@
 #include <PN532.h>
 #include <SPI.h>
 #include <ESP8266WiFi.h>
+#include <WiFiManager.h>
 #include <ESP8266HTTPClient.h>
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WebServer.h>
@@ -10,6 +11,7 @@
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 #include <map>
+#include <EEPROM.h>
 
 // Define Chip Select (CS) pins for NFC Readers
 #define CS_PIN_1 D0  // Chip Select for NFC Reader 1 (IN)
@@ -22,22 +24,34 @@
 Adafruit_NeoPixel pixels(14, PIN, NEO_GRB + NEO_KHZ800);
 #define relayPin D4
 
-/*
-// Function Prototypes (Declare before setup)
-void runningLight(uint8_t red, uint8_t green, uint8_t blue, int wait);
-void handleRelay();
-void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len);
-void sendIP();
-void LED();
-void handleNFCReader(PN532& nfc, String readerType);
-void checkAndReinitializeNFC(PN532& nfc, String readerName);
-void checkRelayTimeout();
-String getUIDString(uint8_t* uid, uint8_t uidSize);
-void grantAccessBuzzer();
-void denyAccessBuzzer();
-*/
+WiFiManager wifiManager;
+char serverIP[40] ; // Set a default value
+WiFiManagerParameter custom_server_ip("server", "Server IP Address", serverIP, 40);
+String serverUrl = "";  // Declare as empty global
 
+// Function to save the server IP to EEPROM
+void saveServerIP(const char* ip) {
+  EEPROM.begin(512);
+  for (int i = 0; i < 40; ++i) {
+    EEPROM.write(i, ip[i]);
+    if (ip[i] == '\0') break; // Stop at the null terminator
+  }
+  EEPROM.commit();
+  Serial.println("Server IP saved to EEPROM.");
+}
 
+// Function to load the server IP from EEPROM
+void loadServerIP() {
+  EEPROM.begin(512);
+  for (int i = 0; i < 40; ++i) {
+    serverIP[i] = EEPROM.read(i);
+  }
+  if (strlen(serverIP) == 0) {
+    strcpy(serverIP, "192.168.1.100"); // Set default only if EEPROM is empty
+  }
+  Serial.print("Loaded Server IP from EEPROM: ");
+  Serial.println(serverIP);
+}
 
 PN532_SPI pn532spi_1(SPI, CS_PIN_1);
 PN532 nfc_1(pn532spi_1);
@@ -47,16 +61,14 @@ PN532 nfc_2(pn532spi_2);
 // Replace with your network credentials
 // const char* ssid = "CTPL_Office";
 // const char* password = "P@ssw0rd@1";
-const char* ssid = "Neelam_21";
-const char* password = "Jason1234";
 
-// Setup Raspberry Pi server IP address and port
-const String serverUrl = "http://192.168.0.42:5000/";  // Replace with your Raspberry Pi's IP
+
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 ESP8266WebServer server(80);
 
 std::map<String, String> uidMap;
+// Setup Raspberry Pi server IP address and port
 
 void setup() {
   pinMode(relayPin, OUTPUT);
@@ -94,9 +106,11 @@ void setup() {
 */
   nfc_2.SAMConfig();
 
-
-
-
+  loadServerIP();
+  // Add the server IP parameter to WiFiManager with a default value
+  WiFiManagerParameter custom_server_ip("server", "Server IP Address", serverIP, 40);
+  wifiManager.addParameter(&custom_server_ip);
+  /*
   WiFi.mode(WIFI_AP_STA);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -104,6 +118,33 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  */
+  if (!wifiManager.autoConnect("ESP_ConfigAP", "password")) {
+    Serial.println("Failed to connect. Restarting...");
+    delay(3000);
+    ESP.restart();
+  }
+  while (WiFi.status() != WL_CONNECTED) {
+    runningLight(128, 0, 128, 50);  // Show running light until WiFi connects
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // Get the server IP from the WiFiManager portal
+  const char* newServerIP = custom_server_ip.getValue();
+  Serial.print("Server IP from Portal: ");
+  Serial.println(newServerIP);
+
+  // Save the server IP to EEPROM only if it has changed and not empty
+  if (strlen(newServerIP) > 0 && strcmp(newServerIP, serverIP) != 0) {
+    strcpy(serverIP, newServerIP);
+    saveServerIP(serverIP);
+  }
+  
+  serverUrl = "http://" + String(serverIP) + ":5000/";
+  Serial.print("Final server URL: ");
+  Serial.println(serverUrl);
+
   server.on("/relay", HTTP_POST, handleRelay);
   server.begin();
   getuid();
@@ -115,7 +156,6 @@ void loop() {
   server.handleClient();
   LED();
   checkRelayTimeout();
-
   // Fully disable both readers before enabling the required one
   digitalWrite(CS_PIN_1, HIGH);
   digitalWrite(CS_PIN_2, HIGH);
@@ -124,14 +164,14 @@ void loop() {
   delay(5);                      // Small delay to allow SPI stabilization
   handleNFCReader(nfc_1, "IN");  // IN reader (Door 1)
   digitalWrite(CS_PIN_1, HIGH);  // Fully disable Reader 1
-  // checkAndReinitializeNFC(nfc_1, "IN");
+  checkAndReinitializeNFC(nfc_1, "IN");
   delay(100);  // Small buffer time between switching readers
 
   digitalWrite(CS_PIN_2, LOW);    // Select Reader 2
   delay(5);                       // Allow time for SPI stabilization
   handleNFCReader(nfc_2, "OUT");  // OUT reader (Door 2)
   digitalWrite(CS_PIN_2, HIGH);   // Fully disable Reader 2
-  // checkAndReinitializeNFC(nfc_2, "OUT");
+  checkAndReinitializeNFC(nfc_2, "OUT");
   delay(100);
 }
 
