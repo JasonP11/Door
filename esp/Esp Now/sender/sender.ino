@@ -2,7 +2,7 @@
 #include <espnow.h>
 
 // REPLACE WITH YOUR RECEIVER MAC Address
-uint8_t broadcastAddress[] = { 0xDC, 0x4F, 0x22, 0x52, 0x8A, 0xA7 };
+uint8_t broadcastAddress[] = { 0x48, 0xE7, 0x29, 0x6D, 0xC7, 0x2D };
 
 String myData = "Test";
 
@@ -61,6 +61,6 @@ void loop() {
       Serial.println("Error sending the data");
     }
   }
-  Serial.println("ready");
+  //Serial.println("ready");
   delay(1000);
 }

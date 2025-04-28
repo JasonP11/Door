@@ -325,20 +325,23 @@ void setup() {
   // Initialize NFC Reader 1 (IN)
   nfc_1.begin();
   uint32_t versiondata_1 = nfc_1.getFirmwareVersion();
+  /*
   if (!versiondata_1) {
     Serial.println("Didn't find NFC Reader 1 (IN)");
     while (1);
   }
+  */
   nfc_1.SAMConfig();
 
   // Initialize NFC Reader 2 (OUT)
   nfc_2.begin();
   uint32_t versiondata_2 = nfc_2.getFirmwareVersion();
-  
+  /*
   if (!versiondata_2) {
     Serial.println("Didn't find NFC Reader 2 (OUT)");
     while (1);
   }
+  */
   nfc_2.SAMConfig();
   
   WiFi.begin(ssid, password);
@@ -404,9 +407,9 @@ void checkAndReinitializeNFC(PN532& nfc, String readerName) {
   uint32_t versiondata = nfc.getFirmwareVersion(); // Check if NFC is still responding
   if (!versiondata) {
     digitalWrite(LED_BUILTIN, LOW);  // Turn LED ON (active LOW)
-    delay(500);                      // Wait for 500ms
+    delay(5000);                      // Wait for 500ms
     digitalWrite(LED_BUILTIN, HIGH); // Turn LED OFF
-    delay(500);                      // Wait for 500ms
+    delay(5000);                      // Wait for 500ms
   }
 }
 

@@ -1,3 +1,5 @@
 #database
 Web/db.py
 
+__pycache__/
+*.pyc
