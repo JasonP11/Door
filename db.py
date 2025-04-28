@@ -10,7 +10,7 @@ def get_db_connection():
             user="postgres",  # Replace with your username
             password="smith"  # Replace with your password
         )
-        print("Database connection established")  # Debugging line
+        
         return conn
     except Exception as e:
         print("Error connecting to the database:", e)
