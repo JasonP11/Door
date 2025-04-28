@@ -1,0 +1,235 @@
+
+
+
+
+
+/* Add these classes to your styles.css file */
+
+
+/* General Styles */
+/* General Styles */
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    
+    /*background: linear-gradient(to right, #233564,#62a4e2);
+    */
+    /*background: url('/static/images/abstract-technological-background_23-2148897676.avif') no-repeat center center fixed;
+    */
+   /* background: linear-gradient(45deg,
+    #2c3350 0%,         
+    #4d4bb8 25%,        
+    #283269 50%,       
+    #506bb4 75%,       
+    #2c3e50 100%      
+  );*/
+
+
+  background: linear-gradient(45deg,
+    #2c3e50 0%,       /* Dark Blue */
+    #3b5cb5 25%,      /* Light Blue */
+    #2d3977 50%,      /* Soft Sky Blue*/ 
+    #344b8c 75%,      /* Light Blue */
+    #2c3e50 100%      /* Dark Blue */
+  ); 
+   
+    background-size:cover;          
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    
+}
+
+/* Container for login */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Login box */
+.login-box {
+    display: flex;
+    width: 700px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Left Section - Chrisel Technolab */
+.login-left {
+    width: 40%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px 0 0 10px;
+    padding: 20px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Right Section - Login Form */
+.login-right {
+    flex: 2;
+    padding: 25px;
+    color: white;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    
+}
+
+
+.logo-container img {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+    border-radius: 50%
+}
+
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+#login-icon {
+    position: static;
+    font-size: 1.2em;
+    color: white;
+}
+
+#user-icon {
+    position: absolute;
+    right: 35px;
+    top: 39%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: white;
+}
+
+/* Style for the lock icon */
+#lock-icon {
+    position: absolute;
+    right: 35px;
+    top: 57%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: white;
+}
+.form-group input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 2px solid white;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;   
+    width: 100%;
+    padding: 10px 20px; 
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: linear-gradient(to right, #2480dc, #00bfff);
+    
+    background-size: 200% 100%; /* Double the size for smooth animation */
+    background-position: 0% 50%;
+    transition: background-position 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for background, scaling, and shadow */
+}
+
+/* On hover, shift gradient and apply scaling and shadow */
+button:hover {
+   
+    background-position: 100% 50%; /* Slide gradient */
+    transform: scale(1.1); /* Slightly enlarge the button */
+   
+}
+
+button:active {
+    transform: scale(1); /* Reset scaling when clicked */
+    box-shadow: 0 4px 8px rgba(0, 191, 255, 0.2); /* Lighter shadow when clicked */
+}
+
+p {
+    text-align: left;
+}
+
+a {
+    color: #00bfff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+h2{
+    text-align: center;
+    
+}
+
+
+
+
+/* Pop-up Animation */
+@keyframes popUp {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pop-up {
+    animation: popUp 0.6s ease forwards;
+}
+
+
+
+
+
+@media (max-width: 600px) {
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}

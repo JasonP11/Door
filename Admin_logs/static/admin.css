@@ -1,0 +1,229 @@
+/* Navbar styles */
+.navbar {
+    display: flex;
+    background: transparent;
+    padding: 10px 20px; /* Padding for the navbar */
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-container h2 {
+    margin-left: 10px;
+}
+.navbar-container {
+    display:flex;
+    align-items: center;
+    
+    
+     /* Align links to the left */
+}
+
+
+.navbar-link {
+    border-radius: 5px;    
+    background-color:  #34495e;
+    padding: 10px;
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-size: 1.2em; /* Font size for links */
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    transition: background-position 0.3s ease, transform 0.3s ease;
+    display: inline-block; /* Smooth transition for hover effect */
+}
+
+.navbar-link:hover {
+    background-position: 100% 50%; /* Slide effect */
+    background-color:  #34495e;
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    color: #f6f7f8;
+}
+
+.logo{
+    float: left;
+    width: 85px;
+    border-radius: 50%; 
+    
+
+}
+
+
+
+.button-container {
+    display: flex;
+    gap: 10px; /* Adds space between buttons */
+}
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #007BFF;  
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+body {
+   
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg,
+    #3e5870 0%,       /* Lighter Dark Blue */
+    #5e7ed5 25%,      /* Lighter Light Blue */
+    #4a5fa0 50%,      /* Softer Sky Blue */
+    #566eb5 75%,      /* Lighter Light Blue */
+    #3e5870 100%      /* Lighter Dark Blue */
+);
+
+
+    min-height: 100vh;
+    
+}
+
+h1 {
+    text-align: center;
+    color: #080808;
+}
+
+h3 {
+    color: #080808;
+}
+
+#add-log-form {
+    background-color:transparent;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 20px; /* space between sections */
+}
+
+
+.three-boxes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap; /* If screen is small, it will wrap to next line */
+}
+
+
+.small-box {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1); /* light transparent white */
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* softer border */
+    border-radius: 12px;
+    font-size: 14px;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+    text-align: center;
+    transition: background 0.3s, border 0.3s;
+}
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+  .small-box::placeholder {
+    color: rgba(255,255,255,0.7);
+  }
+
+/*input[type="text"] {
+    background: linear-gradient(to right, #557d9e,#bbe2ec);
+    
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #f7f7f7;
+    border-radius: 10px;
+}
+*/
+.button-container {
+    display: flex; /* Align buttons side by side */
+    gap: 10px; /* Space between buttons */
+}
+
+button {
+    
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-log-btn {
+    
+    background-color:  #34495e; /* Green for Add */
+}
+
+#update-log-btn {
+    background-color: #007bff; /* Blue for Update */
+}
+
+button:hover {
+    opacity: 0.8; /* Slightly fade on hover */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: transparent;
+
+    color: #333;
+}
+
+/*tr:hover {
+    background-color: #f1f1f1; /* Highlight on hover 
+}
+*/
+
+/*.edit-btn, .delete-btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-btn {
+    background-color:  #34495e Yellow for Edit 
+}
+*/
+.delete-btn {
+    background-color:   #34495e; /* Red for Delete */
+}
+
+/*.edit-btn:hover {
+    background-color: #e0a800; /* Darker yellow on hover 
+}
+*/
+.delete-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+@media (max-width: 600px) {
+    #add-log-form {
+        padding: 15px;
+    }
+    input[type="text"] {
+        width: calc(100% - 18px);
+    }
+}

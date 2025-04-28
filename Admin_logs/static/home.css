@@ -1,0 +1,230 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg,
+    #6c8bbd 0%,    /* Light Dusty Blue */
+    #9bb7f0 25%,   /* Soft Baby Blue */
+    #7a99d9 50%,   /* Light Sky Blue */
+    #90a8e0 75%,   /* Gentle Light Blue */
+    #6c8bbd 100%   /* Light Dusty Blue */
+);
+
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;   
+}
+
+/* Navbar styles */
+
+/*
+.navbar {
+    display: flex;
+    background: transparent;
+    padding: 10px 20px; /* Padding for the navbar 
+    justify-content: space-between;
+    align-items: center;
+}
+*/
+.navbar {
+    display: flex;
+    background: transparent; /* Dark background for the navbar */
+    padding: 10px 20px; /* Padding for the navbar */
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-container h2 {
+    margin-left: 10px;
+}
+.navbar-container {
+    display:flex;
+    align-items: center;
+    
+    
+     /* Align links to the left */
+}
+
+
+.navbar-link {
+    border-radius: 5px;    
+    background-color:  #34495e;
+    padding: 10px;
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-size: 1.2em; /* Font size for links */
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    transition: background-position 0.3s ease, transform 0.3s ease;
+    display: inline-block; /* Smooth transition for hover effect */
+}
+
+.navbar-link:hover {
+    background-position: 100% 50%; /* Slide effect */
+    background-color:  #34495e;
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    color: #f6f7f8;
+}
+
+
+.Access {
+    margin-bottom: 10px;
+}
+
+/* Content styles */
+
+/* Content styles */
+.content {
+    text-align: center;
+     
+    margin-top: 100px; /* Space above the content */
+    position: absolute;
+    margin-left: 600px;
+    
+    
+    
+}
+.image{
+    float: left;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;   
+    margin-top:100px;
+    margin-left: 400px;
+   
+
+}
+
+.logo{
+    float: left;
+    width: 85px;
+    border-radius: 50%; 
+    
+
+}
+
+/* Add these classes to your styles.css file */
+
+
+
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.table-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: transparent;
+    color: black;
+}
+
+tr:hover {
+    background-color: #a5c8ec;
+}
+
+
+
+
+
+/* calender*/
+.log-filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    
+}
+
+.log-filter input {
+    padding: 8px;
+    font-size: 16px;
+    
+    border: 1px solid #ccc;
+    background-color:   #9bb7f0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#log-date,
+#log-name {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+
+#search-btn {
+    display: inline-flex;
+    padding: 5px 10px;
+    align-items: center;
+    border: none;
+    border-radius: 8px;
+    gap: 8px;
+    background: #34495e;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-position 0.3s ease, transform 0.3s ease;
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    
+}
+
+/* Hover effect */
+#search-btn:hover {
+    background-position: 100% 50%;
+    transform: scale(1.05);
+}
+
+/* Active effect */
+#search-btn:active {
+    transform: scale(1);
+}
+
+/* Style for the search icon */
+#search-icon {
+    font-size: 22px; /* Adjust size of the search icon */
+    color: white;
+}
+
+
+
+
+@media (max-width: 600px) {
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+
