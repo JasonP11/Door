@@ -108,16 +108,16 @@ def fetch_logs():
     cursor = conn.cursor()
     try:
         if date and name:
-            cursor.execute("SELECT id,door_no, code, name, role, status, timestamp FROM access_logs WHERE DATE(timestamp) = %s AND name ILIKE %s ORDER BY id DESC", (date, f"%{name}%"))
+            cursor.execute("SELECT id,door_no, name, role, status, timestamp FROM access_logs WHERE DATE(timestamp) = %s AND name ILIKE %s ORDER BY id DESC", (date, f"%{name}%"))
         elif date:
-            cursor.execute("SELECT id, door_no,code, name, role, status, timestamp FROM access_logs WHERE DATE(timestamp) = %s ORDER BY id DESC", (date,))
+            cursor.execute("SELECT id, door_no, name, role, status, timestamp FROM access_logs WHERE DATE(timestamp) = %s ORDER BY id DESC", (date,))
         elif name:
-            cursor.execute("SELECT id, door_no,code, name, role, status, timestamp FROM access_logs WHERE name ILIKE %s ORDER BY id DESC",  (f"%{name}%",))
+            cursor.execute("SELECT id, door_no, name, role, status, timestamp FROM access_logs WHERE name ILIKE %s ORDER BY id DESC",  (f"%{name}%",))
         else:
-            cursor.execute("SELECT id,door_no, code, name, role, status, timestamp FROM access_logs ORDER BY id DESC")
+            cursor.execute("SELECT id,door_no, name, role, status, timestamp FROM access_logs ORDER BY id DESC")
         logs = cursor.fetchall()
         logs_list = [
-            {"id": log[0], "door_no": log[1], "code": log[2], "name": log[3], "role": log[4], "status": log[5], "timestamp": log[6]}
+            {"id": log[0], "door_no": log[1], "name": log[2], "role": log[3], "status": log[4], "timestamp": log[5]}
             for log in logs
         ]
 

@@ -2,6 +2,7 @@ import psycopg2
 from flask import Flask,Blueprint, render_template, jsonify, redirect, request, url_for, session, flash
 from db import get_db_connection
 from datetime import datetime
+from encryption import encrypt_password,Encrypt_UID
 
 log_routes = Blueprint('log_routes', __name__)
 # Database connection
@@ -12,19 +13,23 @@ log_routes = Blueprint('log_routes', __name__)
 @log_routes.route('/logs', methods=['POST'])
 def add_log():
     data = request.json
-    conn = get_db_connection() 
+    conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute('INSERT INTO access_users (key_id, name, level) VALUES (%s, %s, %s)',
-                       (data['key_id'], data['name'], data.get('level', None)))
+        encrypted_uid = Encrypt_UID(data['key_id'])  # Encrypt the UID here
+        cursor.execute(
+            'INSERT INTO access_users (key_id, name, level) VALUES (%s, %s, %s)',
+            (encrypted_uid, data['name'], data.get('level', None))
+        )
         conn.commit()
-        return jsonify({'uid': data['key_id'], 'name': data['name'], 'role': data.get('level', None)}), 201
+        return jsonify({'uid': encrypted_uid, 'name': data['name'], 'role': data.get('level', None)}), 201
     except Exception as e:
         print("Error adding log:", e)
         return jsonify({'error': str(e)}), 400
     finally:
         cursor.close()
         conn.close()
+
 
 # Route to get all logs
 @log_routes.route('/logs', methods=['GET'])

@@ -14,3 +14,7 @@ def verify_password(stored_password, provided_password):
     sha_signature = hashlib.sha256(provided_password.encode()).hexdigest()
     encrypted_provided = hashlib.sha256((sha_signature + ENCRYPTION_KEYWORD).encode()).hexdigest()
     return stored_password == encrypted_provided
+
+def Encrypt_UID(UID):
+    Sha_UID = hashlib.sha256(UID.encode()).hexdigest()
+    return Sha_UID
