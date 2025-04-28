@@ -87,7 +87,7 @@ def handle_nfc_data():
         access_status = "Granted"
         user_name = result[0]
         user_role = f"{result[1]}"
-        access_door += f" granted({reader_type})"
+        access_door = f" granted({reader_type})"
 
     # Log the access attempt in the access_logs table
     log_query = """
