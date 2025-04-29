@@ -4,14 +4,19 @@ import os
 import threading
 from datetime import datetime
 import requests
-import socket
 import sys
+import socket
 import hashlib
+
+
 
 app = Flask(__name__)
 
 # PostgreSQL connection setup
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:123@localhost:5432/work')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://willbun:willbun123@localhost:5432/chrisel_db')
+
+# URLs for relays
+#RELAY_ESP_URL_BYPASS = 'http://192.168.80.48/relay'  # Replace with bypass relay IP
 
 
 passw = "securepass"
@@ -20,6 +25,44 @@ passw = "securepass"
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL)
     return conn
+
+# Function to activate the relay in a separate thread
+def activate_relay(relay_url):
+    try:
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(relay_url, data='{"command":"open"}', headers=headers)
+        
+        if response.status_code != 200:
+            print(f"Error in relay response: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"Exception occurred while activating relay: {e}")
+        
+# UDP Configuration
+UDP_PORT = 6000  # Port to listen for ESP broadcasts
+
+# Function to start the UDP server
+def udp_server():
+    """ Listens for UDP broadcast requests from ESP and sends back the Pi's IP """
+    
+    udp_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    udp_server.bind(("0.0.0.0", UDP_PORT))
+    print(f" UDP Server Started on port {UDP_PORT}...")
+
+    while True:
+    # Receive data from ESP
+        data, addr = udp_server.recvfrom(1024)
+        message = data.decode("utf-8")
+
+        if message == "DISCOVER_PI":
+            pi_ip = socket.gethostbyname(socket.gethostname())
+            print(f"Received request from {addr}, sending Pi IP: {pi_ip}")
+            udp_server.sendto(pi_ip.encode(), addr)
+
+# Start UDP Server in a Background Thread
+udp_thread = threading.Thread(target=udp_server, daemon=True)
+udp_thread.start()
+
 
 
 
@@ -37,14 +80,15 @@ def handle_nfc_data():
     user_name = ""
     user_role = ""
     access_status = "Denied"  # Default status
-
+    access_door = f"{reader_type} - Denied" 
+    
     uid = hashlib.sha256(uid.encode()).hexdigest()
 
     # Query the database to check if the UID exists in the emp table
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    query = "SELECT name, level FROM emp WHERE key_id = %s"
+    query = "SELECT name, level FROM access_users WHERE key_id = %s"
     cursor.execute(query, (uid,))
     result = cursor.fetchone()
 
@@ -52,15 +96,15 @@ def handle_nfc_data():
         access_status = "Granted"
         user_name = result[0]
         user_role = f"{result[1]}"
-        access_door = f" granted({reader_type})"
+        access_door = f"{reader_type} - Granted" 
 
+    
     # Log the access attempt in the access_logs table
     log_query = """
-        INSERT INTO access_logs (code, name, role, status, timestamp)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO access_logs (door_no,code, name, role, status, timestamp)
+        VALUES (%s,%s, %s, %s, %s, %s)
     """
-    cursor.execute(log_query, (uid, user_name, user_role, access_door, datetime.now()))
-
+    cursor.execute(log_query, (door,uid, user_name, user_role, access_door, datetime.now()))
 
     conn.commit()
     cursor.close()
@@ -74,46 +118,48 @@ def handle_nfc_data():
         return jsonify({"message": "Access Denied", "uid": uid, "type": reader_type, "door": door}), 403
 
 
+
 @app.route('/setup', methods=['POST'])
 def IP():
     #relay_ip
     relay_ip = request.form.get("relay_ip")
     request_type = request.form.get("type")  # Get type (setup or normal)
     door_no = request.form.get("door")
-    MacAdd = request.form.get("MacAdd")
+    door_mac = request.form.get("MacAdd")
     if request_type == "setup":
         print(f"🔧 Setup Request Received! Relay IP: {relay_ip}, Door No: {door_no}")
     else:
         print(f"📡 Normal Data Received. Relay IP: {relay_ip}, Door No: {door_no}")
     conn = get_db_connection()
     cursor = conn.cursor()
-
     log_query = """
-            INSERT INTO door (door_no, door_ip, macadd)
-            VALUES (%s, %s, %s)
-            ON CONFLICT (door_no)
-            DO UPDATE SET door_ip = EXCLUDED.door_ip, macadd = EXCLUDED.macadd;
-        """
-    cursor.execute(log_query,(door_no,relay_ip,MacAdd))
+    INSERT INTO door (door_no, door_ip, door_mac)
+    VALUES (%s, %s, %s)
+    ON CONFLICT (door_no) 
+    DO UPDATE SET door_ip = EXCLUDED.door_ip, 
+                  door_mac = EXCLUDED.door_mac              
+    """
+    cursor.execute(log_query, (door_no, relay_ip, door_mac))
+
     conn.commit()
     cursor.close()
     conn.close()
 
     return "Data received", 200
 
-
+'''
 @app.route('/get_uids', methods=['GET'])
 def get_uids():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT key_id, level FROM emp")
+    cur.execute("SELECT key_id, level FROM access_users")
     rows = cur.fetchall()
     cur.close()
     conn.close()
 
     data = [{"key_id": row[0], "level": row[1]} for row in rows]
     return jsonify(data)
-
+'''
 
 @app.route('/')
 def fetch_logs():
@@ -128,8 +174,6 @@ def fetch_logs():
         if conn:
             conn.close()
 
-
-
 @app.route('/bypass', methods=['POST'])
 def bypass_relay():
     try:
@@ -137,8 +181,7 @@ def bypass_relay():
         #headers = {'Content-Type': 'application/json'}
         conn = get_db_connection()
         cursor = conn.cursor()
-        #door_id = request.form.get('door_id')
-        #password = request.form.get('password')
+
 
         data = request.get_json()
         door_id = data.get('door_id')
@@ -166,8 +209,8 @@ def bypass_relay():
             if response.status_code == 200:
                     #  Insert log into `access_logs` with only status
                     insert_query = """
-                    INSERT INTO access_logs (code, name, role, status, timestamp)
-                    VALUES (NULL, NULL, NULL, 'Bypass', NOW());
+                    INSERT INTO access_logs (door_id,code, name, role, status, timestamp)
+                    VALUES (door_no, NULL, NULL, NULL, 'Bypass', NOW());
                     """
                     cursor.execute(insert_query)
                     conn.commit()
@@ -177,6 +220,7 @@ def bypass_relay():
                     return jsonify({"error": "Failed to activate relay", "status": response.status_code}), 500
         else:
             return jsonify({"error": "Invalid password"}), 403
+
     except Exception as e:
         print("Exception:", e)
         return jsonify({"error": "Exception occurred", "details": str(e)}), 500

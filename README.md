@@ -60,7 +60,12 @@ README.md              # Project documentation
 ```
 
 ## 📸 Screenshots
-WAIT
+
+### Connection Module
+![Connection Module](images/connection_1.png)
+
+### Connection PowerSupply
+![PowerSupply](images/connection_2.png)
 
 
 ## 🙌 Acknowledgements
