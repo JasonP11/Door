@@ -59,7 +59,7 @@ This project implements a **smart door access system** combining the **ESP8266 m
 README.md              # Project documentation
 ```
 
-## 📸 Screenshots
+## 📸 Images
 
 ### Connection Module
 ![Connection Module](images/connection_1.png)
