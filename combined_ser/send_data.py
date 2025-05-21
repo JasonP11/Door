@@ -37,7 +37,8 @@ def handle_nfc_data():
     user_name = ""
     user_role = ""
     access_status = "Denied"  # Default status
-
+    access_door = f"{reader_type} - Denied" 
+    
     uid = hashlib.sha256(uid.encode()).hexdigest()
 
     # Query the database to check if the UID exists in the emp table
