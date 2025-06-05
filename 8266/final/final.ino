@@ -56,11 +56,6 @@ PN532 nfc_1(pn532spi_1);
 PN532_SPI pn532spi_2(SPI, CS_PIN_2);  
 PN532 nfc_2(pn532spi_2);
 
-// const char* ssid = "Neelam_21";
-// const char* password = "Jason1234";
-
-// Setup Raspberry Pi server IP address and port
-// const String serverUrl = "http://192.168.80.91:5000/data";  // Replace with your Raspberry Pi's IP
 
 WiFiClient wifiClient;  // Create a WiFiClient object
 ESP8266WebServer server(80);
@@ -106,14 +101,6 @@ void setup() {
   WiFiManagerParameter custom_server_ip("server", "Server IP Address", serverIP, 40);
   wifiManager.addParameter(&custom_server_ip);
 
-/*  WiFi.mode(WIFI_AP_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    runningLight(128, 0, 128, 50);  // Show running light until WiFi connects
-    Serial.println("Connecting to WiFi...");
-  }
-  Serial.println("Connected to WiFi");
-  */
 
   if (!wifiManager.autoConnect("ESP_ConfigAP", "password")) {
     Serial.println("Failed to connect. Restarting...");
@@ -173,23 +160,6 @@ void loop() {
 
 
 
-
-  // Use a character array for better compatibility
-
-void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len) {
-  char myData[32] = "Ready";
-  Serial.print("Bytes received: ");
-  Serial.println(len);
-
-  memcpy(myData, incomingData, len);
-  myData[len] = '\0';  // Ensure null termination
-
-  Serial.print("Received Data: ");
-  Serial.println(myData);
-  Serial.println();
-}
-
-
 void sendIP(){
   String IP = WiFi.localIP().toString();
   String MacAdd = WiFi.macAddress();
@@ -199,7 +169,7 @@ void sendIP(){
       http.begin(wifiClient, serverUrl+"/setup");
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
       //http.POST(IP);
-      String payload = "type=setup&relay_ip=" + IP + "&door=4 " + "&MacAdd=" + MacAdd ;   // Include type parameter
+      String payload = "type=setup&relay_ip=" + IP + "&door=1 " + "&MacAdd=" + MacAdd ;   // Include type parameter
       Serial.println(payload);  
       int httpResponseCode = http.POST(payload);
   }
@@ -271,7 +241,7 @@ void handleNFCReader(PN532& nfc, String readerType) {
   uint8_t uidLength;
   
   // Set the door variable based on which reader is being used
-  String door = "4";  // Door 1 for IN, Door 2 for OUT
+  String door = "1";  // Make sure to change this
 
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 200)) {
     String uidString = getUIDString(uid, uidLength);
@@ -389,13 +359,5 @@ void LED() {
   }
   pixels.show();
 }
-
-
-//SCK  5
-//MISO 6
-//Mosi 7
-
-
-//#define NUMPIXELS 10     // Number of LEDs
 
 

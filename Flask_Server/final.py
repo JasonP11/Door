@@ -13,13 +13,9 @@ import hashlib
 app = Flask(__name__)
 
 # PostgreSQL connection setup
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://willbun:willbun123@localhost:5432/chrisel_db')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://') #<-- insert your database
 
-# URLs for relays
-#RELAY_ESP_URL_BYPASS = 'http://192.168.80.48/relay'  # Replace with bypass relay IP
-
-
-passw = "securepass"
+passw = "blank"
 
 # Connect to PostgreSQL
 def get_db_connection():
@@ -37,34 +33,6 @@ def activate_relay(relay_url):
     except Exception as e:
         print(f"Exception occurred while activating relay: {e}")
         
-# UDP Configuration
-UDP_PORT = 6000  # Port to listen for ESP broadcasts
-
-# Function to start the UDP server
-def udp_server():
-    """ Listens for UDP broadcast requests from ESP and sends back the Pi's IP """
-    
-    udp_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    udp_server.bind(("0.0.0.0", UDP_PORT))
-    print(f" UDP Server Started on port {UDP_PORT}...")
-
-    while True:
-    # Receive data from ESP
-        data, addr = udp_server.recvfrom(1024)
-        message = data.decode("utf-8")
-
-        if message == "DISCOVER_PI":
-            pi_ip = socket.gethostbyname(socket.gethostname())
-            print(f"Received request from {addr}, sending Pi IP: {pi_ip}")
-            udp_server.sendto(pi_ip.encode(), addr)
-
-# Start UDP Server in a Background Thread
-udp_thread = threading.Thread(target=udp_server, daemon=True)
-udp_thread.start()
-
-
-
 
 @app.route('/data', methods=['POST'])
 def handle_nfc_data():
@@ -147,38 +115,10 @@ def IP():
 
     return "Data received", 200
 
-'''
-@app.route('/get_uids', methods=['GET'])
-def get_uids():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT key_id, level FROM access_users")
-    rows = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    data = [{"key_id": row[0], "level": row[1]} for row in rows]
-    return jsonify(data)
-'''
-
-@app.route('/')
-def fetch_logs():
-    conn = get_db_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute('SELECT * FROM access_logs ORDER BY id DESC')
-        logs = cur.fetchall()
-        cur.close()
-        return jsonify(logs)
-    finally:
-        if conn:
-            conn.close()
 
 @app.route('/bypass', methods=['POST'])
 def bypass_relay():
     try:
-        # Send data as plain JSON
-        #headers = {'Content-Type': 'application/json'}
         conn = get_db_connection()
         cursor = conn.cursor()
 
@@ -197,7 +137,6 @@ def bypass_relay():
 
         url = f"http://{IP}/relay"
         
-        #sys.stdout.flush()
         if(password == passw):
             response = requests.post(
             url,  # Ensure it's a proper URL
